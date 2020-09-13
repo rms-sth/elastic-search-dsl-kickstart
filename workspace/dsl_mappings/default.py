@@ -30,9 +30,9 @@ class DefaultMapping(Document):
     source = Nested(properties={'id': Keyword(), 'name': Keyword()})
     tags = Nested(Tags)
     created_at = Date(
-        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z' || yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS")
     updated_at = Date(
-        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z' || yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS")
     created_by = Object(properties={'id': Keyword(
         multi=True), 'name': Keyword(multi=True)})
     updated_by = Object(properties={'id': Keyword(), 'name': Keyword()})
@@ -45,12 +45,7 @@ class DefaultMapping(Document):
             self.save()
 
     def save(self, **kwargs):
-        # if not self.created_at:
-        #     # "2020-09-02T14:55:33.661355Z"
-        #     # self.created_at = datetime.now().strftime("%m-%d-%Y'%z'%H:%M:%S.%f")
-        #     # self.created_at = datetime.now().strftime("%m-%d-%YT%H:%M:%S.%fZ")
-        #     # self.created_at = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
-        #     self.created_at = "2020-09-02T14:55:33.660981Z"
-        # # self.updated_at = datetime.now()
-        # self.updated_at = "2020-09-02T14:55:33.661355Z"
+        if not self.created_at:
+            self.created_at = datetime.now().isoformat()
+        self.updated_at = datetime.now().isoformat()
         return super().save(**kwargs)
