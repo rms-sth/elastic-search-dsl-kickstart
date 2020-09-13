@@ -1,0 +1,46 @@
+{
+    "workspace": {
+        "id": "abc",
+        "name": "Chuchuro workspace"
+    },
+    "user": {
+        "id": "xyz",
+        "name": "Ramesh Pradhan"
+    },
+    "message": "Hello how are you?",
+    "action": "create",
+    "source": [
+        {
+            "id": "1342",
+            "name": "ms-docvault-v1"
+        }
+    ],
+    "tags": [
+        {
+            "tag": "how are you",
+            "type": "hello type",
+            "weight": "2"
+        }
+    ],
+    "created_at": "2020-07-17 11:46:09.135444+00:00",
+    "updated_at": "2020-07-17 11:46:09.135444+00:00",
+    "created_by": {
+        "id": "hello",
+        "name": "Niroj Adhikary"
+    },
+    "references": [
+        {
+            "vault": {
+                "name": "docvault"
+            },
+            "app": {
+                "type": "collection",
+                "id": "32cca8a6-d359-4aaf-86e6-84b8d5c5da9a"
+            },
+            "object": {
+                "type": "collection",
+                "id": "32cca8a6-d359-4aaf-86e6-84b8d5c5da9a"
+            }
+        }
+    ]
+}

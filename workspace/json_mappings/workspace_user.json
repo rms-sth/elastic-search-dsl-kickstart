@@ -1,0 +1,39 @@
+{
+    "mappings": {
+        "properties": {
+            "workspace": {
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text",
+                        "index": true,
+                        "analyzer": "simple"
+                    }
+                }   
+            },
+            "user": {
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text",
+                        "index": true,
+                        "analyzer": "simple"
+                    }
+                }
+            },
+            "created_at": {
+                "type": "date",
+                "format": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z' || yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                "doc_values": true
+            },
+            "updated_at": {
+                "type": "date",
+                "format": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z' || yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            }
+        }
+    }
+}

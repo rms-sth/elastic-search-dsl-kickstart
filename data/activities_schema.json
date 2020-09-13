@@ -1,0 +1,116 @@
+{
+    "workspace": {
+        "type": "dict",
+        "schema": {
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            }
+        }
+    },
+    "user": {
+        "type": "dict",
+        "schema": {
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            }
+        }
+    },
+    "message": {
+        "type": "string"
+    },
+    "action": {
+        "type": "string"
+    },
+    "source": {
+        "type": "list",
+        "schema": {
+            "type": "dict",
+            "schema": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "tags": {
+        "type": "list",
+        "schema": {
+            "type": "dict",
+            "schema": {
+                "tag": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "created_by": {
+        "type": "dict",
+        "schema": {
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            }
+        }
+    },
+    "references": {
+        "type": "list",
+        "schema": {
+            "type": "dict",
+            "schema": {
+                "vault": {
+                    "type": "dict",
+                    "schema": {
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "app": {
+                    "type": "dict",
+                    "schema": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "object": {
+                    "type": "dict",
+                    "schema": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,130 @@
+{
+    "mappings": {
+        "properties": {
+            "workspace": {
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text",
+                        "analyzer": "simple"
+                    }
+                }
+            },
+            "user": {
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text",
+                        "analyzer": "simple"
+                    }
+                }
+            },
+            "message": {
+                "type": "text",
+                "index": true,
+                "analyzer": "simple"
+            },
+            "action": {
+                "type": "keyword",
+                "index": true,
+                "analyzer": "keyword"
+            },
+            "source": {
+                "type": "nested",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "tags": {
+                "type": "nested",
+                "properties": {
+                    "tag": {
+                        "type": "text",
+                        "analyzer": "simple"
+                    },
+                    "type": {
+                        "type": "text",
+                        "analyzer": "simple"
+                    },
+                    "weight": {
+                        "type": "double"
+                    }
+                }
+            },
+            "created_at": {
+                "type": "date",
+                "format": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z' || yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                "doc_values": true
+            },
+            "updated_at": {
+                "type": "date",
+                "format": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z' || yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            },
+            "created_by": {
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "index": true,
+                        "analyzer": "simple"
+                    },
+                    "id": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "updated_by": {
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "index": true,
+                        "analyzer": "simple"
+                    },
+                    "id": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "references": {
+                "type": "nested",
+                "properties": {
+                    "vault": {
+                        "properties": {
+                            "id": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "app": {
+                        "properties": {
+                            "id": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "object": {
+                        "properties": {
+                            "name": {
+                                "type": "keyword"
+                            },
+                            "id": {
+                                "type": "keyword"
+                            },
+                            "type": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

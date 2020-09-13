@@ -1,0 +1,46 @@
+{
+    "mappings": {
+        "properties": {
+            "name": {
+                "type": "text",
+                "analyzer": "simple"
+            },
+            "email": {
+                "type": "text",
+                "analyzer": "simple"
+            },
+            "description": {
+                "type": "keyword",
+                "index": true,
+                "analyzer": "stop"
+            },
+            "address": {
+                "type": "nested",
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "analyzer": "simple"
+                    }
+                }
+            },
+            "contact_number": {
+                "type": "nested",
+                "properties": {
+                    "contact_number": {
+                        "type": "text",
+                        "analyzer": "simple"
+                    }
+                }
+            },
+            "created_at": {
+                "type": "date",
+                "format": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z' || yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                "doc_values": true
+            },
+            "updated_at": {
+                "type": "date",
+                "format": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z' || yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            }
+        }
+    }
+}
