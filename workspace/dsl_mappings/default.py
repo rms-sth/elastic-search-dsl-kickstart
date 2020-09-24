@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from elasticsearch_dsl import Date, Document, InnerDoc, Keyword, Nested, Text
-from elasticsearch_dsl.field import Double, Object
+from elasticsearch_dsl.field import Double, Float, Object
 
 
 class Tags(InnerDoc):
@@ -49,3 +49,48 @@ class DefaultMapping(Document):
             self.created_at = datetime.now().isoformat()
         self.updated_at = datetime.now().isoformat()
         return super().save(**kwargs)
+
+
+class ElasticsearchBaseDocument(Document):
+    class Source(InnerDoc):
+        id = Keyword()
+        name = Keyword(normalizer="lowercase")
+
+    class Workspace(InnerDoc):
+        id = Keyword()
+        name = Keyword()
+
+    class Tag(InnerDoc):
+        tag = Keyword()
+        type = Text()
+        weight = Float()
+
+    class CreatedBy(InnerDoc):
+        id = Keyword()
+        name = Keyword(normalizer="lowercase")
+
+    id = Keyword()
+    name = Keyword(normalizer="lowercase")
+    slug = Keyword()
+    description = Text(analyzer="stop")
+    source = Nested(Source)
+    workspaces = Nested(Workspace)
+    tags = Nested(Tag)
+    references = Nested(
+        properties={
+            "vault": {"properties": {"id": Keyword()}},
+            "app": {"properties": {"id": Keyword()}},
+            "object": {"properties": {"id": Keyword(), "type": Keyword()}},
+        }
+    )
+    created_at = Date(
+        default_timezone="UTC",
+        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+    )
+    updated_at = Date(
+        default_timezone="UTC",
+        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+    )
+    created_by = Object(
+        properties={"id": Keyword(multi=True), "name": Keyword(multi=True)}
+    )

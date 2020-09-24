@@ -10,7 +10,7 @@ from . users import *
 from . workspaces import *
 from . workspace_users import *
 from . workspace_acl import *
-
+from . docvault import *
 
 # __all__ = (
 #     activities.__all__ +

@@ -9,7 +9,7 @@ class ActivityMapping(DefaultMapping):
         properties={'id': Keyword(multi=True), 'name': Keyword(multi=True)}
     )
     user = Object(
-        properties={'id': Keyword(multi=True), 'name': Keyword(multi=True)}
+        properties={'id': Keyword(multi=True), 'name': Keyword(multi=True, doc_values=True)}
     )
     message = Text(analyzer='simple')
     action = Text(analyzer='simple')
