@@ -17,7 +17,7 @@ class MediaIndex:
         """
         create the mappings in elasticsearch
         """
-        exists = self.es.indices.exists(index="test.docvault.docs")
+        exists = self.es.indices.exists(index="dev.ramesh.docvault.test.docs")
         if exists:
             print('New mapping exists. Cannot proceed further')
             return
@@ -28,7 +28,7 @@ class MediaIndex:
         """
         deletes existing mapping and create new mapping
         """
-        exists = self.es.indices.exists(index="test.docvault.docs")
+        exists = self.es.indices.exists(index="dev.ramesh.docvault.test.docs")
         print(exists)
         if exists:
             print('New mapping exists. Deleting existing mapping and creating new one...')

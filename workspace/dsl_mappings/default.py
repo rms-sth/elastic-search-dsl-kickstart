@@ -27,10 +27,10 @@ class DefaultMapping(Document):
     source = Nested(properties={'id': Keyword(), 'name': Keyword()})
     tags = Nested(Tags)
     created_at = Date(
-        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS"
+        # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ"
     )
     updated_at = Date(
-        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS"
+        # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ"
     )
     created_by = Object(
         properties={'id': Keyword(multi=True), 'name': Keyword(multi=True)}
@@ -69,6 +69,11 @@ class ElasticsearchBaseDocument(Document):
         id = Keyword()
         name = Keyword(normalizer="lowercase")
 
+    class References(InnerDoc):
+        vault = Nested(properties={"name": Keyword()})
+        # app = Nested(properties={"id": Keyword()})
+        object = Nested(properties={"id": Keyword(), "type": Keyword()})
+
     id = Keyword()
     name = Keyword(normalizer="lowercase")
     slug = Keyword()
@@ -76,20 +81,21 @@ class ElasticsearchBaseDocument(Document):
     source = Nested(Source)
     workspaces = Nested(Workspace)
     tags = Nested(Tag)
-    references = Nested(
-        properties={
-            "vault": {"properties": {"id": Keyword()}},
-            "app": {"properties": {"id": Keyword()}},
-            "object": {"properties": {"id": Keyword(), "type": Keyword()}},
-        }
-    )
+    references = Nested(References)
+    # references = Nested(
+    #     properties={
+    #         "vault": {"properties": {"id": Keyword()}},
+    #         "app": {"properties": {"id": Keyword()}},
+    #         "object": {"properties": {"id": Keyword(), "type": Keyword()}},
+    #     }
+    # )
     created_at = Date(
         default_timezone="UTC",
-        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+        # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ",
     )
     updated_at = Date(
         default_timezone="UTC",
-        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+        # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ",
     )
     created_by = Object(
         properties={"id": Keyword(multi=True), "name": Keyword(multi=True)}

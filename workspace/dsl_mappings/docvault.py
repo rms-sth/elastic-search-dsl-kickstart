@@ -14,14 +14,14 @@ from elasticsearch_dsl import (
 
 class MediaMapping(ElasticsearchBaseDocument):
     class Index:
-        name = 'test.docvault.docs'
+        name = 'dev.ramesh.docvault.test.docs'
 
     metadata = Object(
         properties={
             "size": Object(properties={"values": Integer(), "unit": Keyword()}),
             "created_timestamp": Date(
                 default_timezone="UTC",
-                format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+                # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             ),
             "meme_type": Text(),
         }
@@ -35,11 +35,11 @@ class MediaMapping(ElasticsearchBaseDocument):
                     "status": Integer(),
                     "start_timestamp": Date(
                         default_timezone="UTC",
-                        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+                        # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ",
                     ),
                     "end_timestamp": Date(
                         default_timezone="UTC",
-                        format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+                        # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ",
                     ),
                 }
             )
@@ -50,11 +50,11 @@ class MediaMapping(ElasticsearchBaseDocument):
             "status": Integer(),
             "start_timestamp": Date(
                 default_timezone="UTC",
-                format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+                # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             ),
             "end_timestamp": Date(
                 default_timezone="UTC",
-                format="yyyy-MM-dd'T'HH:mm:ss.SSSSSS || yyyy-MM-dd'T'HH:mm:ss.SSS",
+                # format="yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ || yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             ),
         }
     )
