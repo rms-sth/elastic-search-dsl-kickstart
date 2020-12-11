@@ -1,6 +1,9 @@
 # from . default import *
 from . activities import *
 from . docvault import *
+from . _collections import *
+from . data import *
+from . data_template import *
 # from . organizations import *
 # from . policies import *
 # from . resources import *

@@ -58,3 +58,9 @@ class MediaMapping(ElasticsearchBaseDocument):
             ),
         }
     )
+    storage = Object(
+        properties={
+            "provider": Keyword(),
+            "location": Text(),
+        }
+    )

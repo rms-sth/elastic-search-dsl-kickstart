@@ -10,12 +10,11 @@
 # activity.create_index()
 
 
-from workspace.dsl_index import MediaIndex
+from workspace.dsl_index import DataIndex
 
 # media = MediaIndex()
 # media.create_new_mapping()
 
-from workspace.dsl_index import CollectionIndex
 
-collection = CollectionIndex()
-collection.create_new_mapping()
+data = DataIndex()
+data.create_new_mapping()
