@@ -1,5 +1,13 @@
+from colorama import init
+
+init()
+import random
+import string
+import time
+import uuid
 from datetime import datetime
 
+from colorama import Style
 from elasticsearch_dsl import (
     Boolean,
     Date,
@@ -10,11 +18,11 @@ from elasticsearch_dsl import (
     Nested,
     Object,
     Text,
-    connections,
     analyzer,
+    connections,
     tokenizer,
 )
-
+from termcolor import colored
 
 path_hierarchy_tokenizer = tokenizer(
     name_or_instance="path_hierarchy_tokenizer",
@@ -55,7 +63,7 @@ class User(InnerDoc):
 
 class Reference(InnerDoc):
     """
-    Class wrapper for nested comment objects.
+    Class wrapper for reference objects.
     """
 
     reference_id = Long(required=True)
@@ -65,7 +73,7 @@ class Reference(InnerDoc):
 
 class Shared(InnerDoc):
     """
-    Class wrapper for nested comment objects.
+    Class wrapper for nested shared objects.
     """
 
     user = Object(User, required=True)
@@ -83,7 +91,7 @@ class Shared(InnerDoc):
 
 class Starred(InnerDoc):
     """
-    Class wrapper for nested comment objects.
+    Class wrapper for nested starred objects.
     """
 
     user = Object(User, required=True)
@@ -103,18 +111,24 @@ class Doc(Document):
     """
 
     id = Long(required=True)
-    name = Keyword(normalizer="lowercase")
+    name = Text(
+        fields={
+            "text": Text(),
+            "keyword": Keyword(normalizer="lowercase"),
+        }
+    )
+    # name = Keyword(normalizer="lowercase")
     slug = Keyword(normalizer="lowercase")
     description = Text(analyzer="stop")
     type = Keyword(normalizer="lowercase")
-    collection = Text(
+    xpath = Text(
         fields={
             "tree": Text(analyzer=path_hierarchy_analyzer),
             "tree_reversed": Text(analyzer=path_hierarchy_analyzer_reversed),
             "keyword": Keyword(normalizer="lowercase"),
         }
     )
-    # collection = Text(analyzer=path_hierarchy_analyzer, fields={"keyword": Keyword()})
+    # xpath = Text(analyzer=path_hierarchy_analyzer, fields={"keyword": Keyword()})
     tag_detail = Object()
     reference = Object()
     shared = Nested(Shared)
@@ -178,108 +192,186 @@ def setup():
     index_template.save()
 
 
+# user objects to use
+ramesh1 = User(
+    id=47,
+    email="ramesrest@gmail.com",
+    name="Ramesh Pradhan",
+    status="active",
+)
+ramesh2 = User(
+    id=42,
+    email="ramesh.pradhan@chuchuro.com",
+    name="Ramesh Pradhan",
+    status="active",
+)
+
+reference = {
+    "reference_id": 4439,
+    "reference_slug": "python_venv_project_fa1c032e-17fc-4c9f-a479-a4f755622853",
+    "reference_object": "projects",
+}
+permission = {
+    "read": 1,
+    "write": 1,
+    "edit": 1,
+    "delete": 1,
+    "manage": 1,
+}
+
+
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase
+    result_str = "".join(random.choice(letters) for i in range(length))
+    return result_str
+
+
+def get_random_slug():
+    result_str = get_random_string(8) + str(uuid.uuid4())
+    return result_str
+
+
+def get_random_extension():
+    valid_extensions = ["jpg", "png", "exe", "xls", "json", "pdf", "html"]
+    return random.choice(valid_extensions)
+
+
+def get_random_xpath(min=10, max=100):
+    length = random.randint(min, max)
+    s = ""
+    for _ in range(length):
+        s = s + f"/{uuid.uuid4()}"
+    return s
+
+
+def get_xpath(length=15):
+    s = ""
+    for _ in range(length):
+        s = s + f"/{uuid.uuid4()}"
+    return s
+
+
+def get_random_document():
+    valid_extensions = ["file", "folder", "project"]
+    return random.choice(valid_extensions)
+
+
+def get_random_path():
+    path = f"/storage/{uuid.uuid4()}.{get_random_extension()}"
+    return path
+
+
+def get_random_pending():
+    pending = [True, False]
+    return random.choice(pending)
+
+
+def str_time_prop(start, end, time_format, prop):
+    """Get a time at a proportion of a range of two formatted times.
+
+    start and end should be strings specifying times formatted in the
+    given format (strftime-style), giving an interval [start, end].
+    prop specifies how a proportion of the interval to be taken after
+    start.  The returned time will be in the specified format.
+    """
+
+    stime = time.mktime(time.strptime(start, time_format))
+    etime = time.mktime(time.strptime(end, time_format))
+
+    ptime = stime + prop * (etime - stime)
+
+    return time.strftime(time_format, time.localtime(ptime))
+
+
+def random_date(start, end, prop):
+    return str_time_prop(start, end, "%m/%d/%Y %I:%M %p", prop)
+
+
+def get_random_user():
+    users = [ramesh1, ramesh2]
+    return random.choice(users)
+
+
+def import_random_data(xpath_length=10, child_docs=100):
+    """import random data to ES
+
+    Args:
+        xpath_length (int, optional): length of xpath to create. Defaults to 10.
+        child_docs (int, optional): no of child in each child docs. Defaults to 100.
+    Eg:
+        data = {
+            "id": 61460,
+            "name": "www.YTS.MX.jpg",
+            "slug": "wwwytsmxjpg_72803e60-04f4-4107-9c80-cff387285047",
+            "description": "www.YTS.MX.jpg",
+            "xpath": "/123_681ef55d-a704-461e-a2ee-7d508e109bbf",
+            "type": "file",
+            "path": "/storage/933b49c3-995c-4795-a4f7-b75028215d55.jpg",
+            "proxy_path": None,
+            "text_extraction_pending": False,
+            "metadata": {"size": "53226", "content_type": "image/jpeg"},
+            "created_at": datetime.now(),
+            "created_by": ramesh1,
+            "updated_by": ramesh2,
+            "tag_detail": {"client": "drc", "application": "docvault"},
+        }
+    """
+    extension = get_random_extension()
+    name = f"{get_random_string(12)}.{extension}"
+    description = str(name) + get_random_string(150)
+    slug = get_random_slug()
+    xpath = get_random_xpath(4, 15)
+    type = get_random_document()
+    text_extraction_pending = get_random_pending()
+    path = get_random_path()
+    created_at = random_date("1/1/2008 1:30 PM", "1/1/2021 4:50 AM", random.random())
+    created_by = get_random_user()
+    updated_by = get_random_user()
+    # xpath = get_random_xpath(4, 15)
+    xpath = get_xpath(xpath_length)
+    tree_split = xpath.split("/")
+
+    for i in range(1, len(tree_split) + 1):
+        xpath = "/".join(tree_split[:i])
+        print(
+            f"{Style.BRIGHT}==============================================================================================================================================="
+        )
+        print(i)
+        print(colored(xpath or "/", "green"))
+        for _ in range(child_docs):
+            name = f"{get_random_string(12)}.{extension}"
+            description = str(name) + get_random_string(150)
+            slug = get_random_slug()
+            type = get_random_document()
+            text_extraction_pending = get_random_pending()
+            path = get_random_path()
+            created_at = random_date(
+                "1/1/2008 1:30 PM", "1/1/2021 4:50 AM", random.random()
+            )
+            data = {
+                "id": 61460,
+                "name": name,
+                "slug": slug,
+                "description": description,
+                "xpath": xpath or "/",
+                "type": type,
+                "path": path,
+                "text_extraction_pending": text_extraction_pending,
+                "created_at": created_at,
+                "created_by": created_by,
+                "updated_by": updated_by,
+            }
+
+            # create a question object
+            doc = Doc(**data)
+            doc.add_shared(user=created_by, permission=permission)
+            doc.add_starred(user=updated_by)
+
+
 if __name__ == "__main__":
-    # initiate the default connection to elasticsearch
     connections.create_connection()
 
-    # create index
     setup()
 
-    # user objects to use
-    ramesh1 = User(
-        id=47,
-        email="ramesrest@gmail.com",
-        name="Ramesh Pradhan",
-        status="active",
-    )
-    ramesh2 = User(
-        id=42,
-        email="ramesh.pradhan@chuchuro.com",
-        name="Ramesh Pradhan",
-        status="active",
-    )
-
-    reference = {
-        "reference_id": 4439,
-        "reference_slug": "python_venv_project_fa1c032e-17fc-4c9f-a479-a4f755622853",
-        "reference_object": "projects",
-    }
-    permission = {
-        "read": 1,
-        "write": 1,
-        "edit": 1,
-        "delete": 1,
-        "manage": 1,
-    }
-
-    data = {
-        "id": 61460,
-        "name": "www.YTS.MX.jpg",
-        "slug": "wwwytsmxjpg_72803e60-04f4-4107-9c80-cff387285047",
-        "description": "www.YTS.MX.jpg",
-        "collection": "/123_681ef55d-a704-461e-a2ee-7d508e109bbf/77_c4902b0b-3c7c-4c37-b00f-0a75db43caa7/91_356d4974-6a66-42ef-8284-b06dd899ca27",
-        "type": "file",
-        "path": "/storage/933b49c3-995c-4795-a4f7-b75028215d55.jpg",
-        "proxy_path": None,
-        "text_extraction_pending": False,
-        "metadata": {"size": "53226", "content_type": "image/jpeg"},
-        "created_at": datetime.now(),
-        "created_by": ramesh1,
-        "updated_by": ramesh2,
-        "tag_detail": {"client": "drc", "application": "docvault"},
-    }
-
-    # create a question object
-    doc = Doc(**data)
-    doc.add_shared(user=ramesh2, permission=permission)
-    doc.add_starred(user=ramesh2)
-    if doc.save():
-        print("Data saved successfully.")
-
-    data = {
-        "id": 61460,
-        "name": "www.YTS.MX.jpg",
-        "slug": "wwwytsmxjpg_72803e60-04f4-4107-9c80-cff387285047",
-        "description": "www.YTS.MX.jpg",
-        "collection": "/123_681ef55d-a704-461e-a2ee-7d508e109bbf/77_c4902b0b-3c7c-4c37-b00f-0a75db43caa7",
-        "type": "file",
-        "path": "/storage/933b49c3-995c-4795-a4f7-b75028215d55.jpg",
-        "proxy_path": None,
-        "text_extraction_pending": False,
-        "metadata": {"size": "53226", "content_type": "image/jpeg"},
-        "created_at": datetime.now(),
-        "created_by": ramesh1,
-        "updated_by": ramesh2,
-        "tag_detail": {"client": "drc", "application": "docvault"},
-    }
-
-    # create a question object
-    doc = Doc(**data)
-    doc.add_shared(user=ramesh2, permission=permission)
-    doc.add_starred(user=ramesh2)
-    if doc.save():
-        print("Data saved successfully.")
-
-    data = {
-        "id": 61460,
-        "name": "www.YTS.MX.jpg",
-        "slug": "wwwytsmxjpg_72803e60-04f4-4107-9c80-cff387285047",
-        "description": "www.YTS.MX.jpg",
-        "collection": "/123_681ef55d-a704-461e-a2ee-7d508e109bbf",
-        "type": "file",
-        "path": "/storage/933b49c3-995c-4795-a4f7-b75028215d55.jpg",
-        "proxy_path": None,
-        "text_extraction_pending": False,
-        "metadata": {"size": "53226", "content_type": "image/jpeg"},
-        "created_at": datetime.now(),
-        "created_by": ramesh1,
-        "updated_by": ramesh2,
-        "tag_detail": {"client": "drc", "application": "docvault"},
-    }
-
-    # create a question object
-    doc = Doc(**data)
-    doc.add_shared(user=ramesh2, permission=permission)
-    doc.add_starred(user=ramesh2)
-    if doc.save():
-        print("Data saved successfully.")
+    import_random_data(xpath_length=10, child_docs=10)
