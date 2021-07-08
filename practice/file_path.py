@@ -340,7 +340,7 @@ def import_random_data(xpath_length=10, child_docs=100):
         print(i)
         print(colored(xpath or "/", "green"))
         for _ in range(child_docs):
-            name = f"{get_random_string(12)}.{extension}"
+            name = f"{get_random_string(12)}.{get_random_extension()}"
             description = str(name) + get_random_string(150)
             slug = get_random_slug()
             type = get_random_document()
